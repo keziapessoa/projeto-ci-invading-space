@@ -34,8 +34,8 @@ int main( int argc, const char** argv )
         return -1;
     }
 
-    //if(!capture.open("video.mp4")) // para testar com um video
-    if(!capture.open(0)) // para testar com a webcam
+    if(!capture.open("video.mp4")) // para testar com um video
+    //if(!capture.open(0)) // para testar com a webcam
     {
         cout << "Capture from camera #0 didn't work" << endl;
         return 1;
@@ -147,6 +147,13 @@ void detectAndDraw( Mat& frame, CascadeClassifier& cascade, double scale, bool t
         |CASCADE_SCALE_IMAGE,
         Size(40, 40) );
 
+    // Desenha uma imagem
+    Mat img = cv::imread("nave.jpeg", IMREAD_UNCHANGED), img2;
+    printf("img::width: %d, height=%d\n", img.cols, img.rows );
+    if (img.rows > 200 || img.cols > 200)
+        resize( img, img, Size(60, 74));
+    //drawImage(smallFrame, img, x, y);
+
     // PERCORRE AS FACES ENCONTRADAS
     for ( size_t i = 0; i < faces.size(); i++ )
     {
@@ -154,14 +161,9 @@ void detectAndDraw( Mat& frame, CascadeClassifier& cascade, double scale, bool t
         rectangle( smallFrame, Point(cvRound(r.x), cvRound(r.y)),
                     Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
                     color, 3);
+        drawImage(smallFrame, img, r.x, r.y);
+        break;
     }
-
-    // Desenha uma imagem
-    Mat img = cv::imread("nave.png", IMREAD_UNCHANGED), img2;
-    printf("img::width: %d, height=%d\n", img.cols, img.rows );
-    if (img.rows > 200 || img.cols > 200)
-        resize( img, img, Size(60, 74));
-    drawImage(smallFrame, img, x, y);
 
     // Desenha quadrados com transparencia
     double alpha = 0.7; // transparência do quadrado
