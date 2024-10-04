@@ -1,0 +1,15 @@
+Comandos 
+
+Para abrir a pasta:
+
+cd /home/kezia/Downloads/Projeto
+
+
+Para compilar o código fonte:
+
+g++ facedetect_extra.cpp `pkg-config --cflags opencv4` `pkg-config --libs --static opencv4`
+
+
+Para executar:
+
+./a.out
