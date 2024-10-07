@@ -169,7 +169,7 @@ void detectAndDraw( Mat& frame, CascadeClassifier& cascade, double scale, bool t
     // Desenha quadrados com transparencia
     double alpha = 0.7; // transparência do quadrado
     //drawTransRect(smallFrame, Scalar(0,0,255), alpha, Rect(  0, 0, 640, 360)); 
-    drawTransRect(smallFrame, Scalar(255,0,0), alpha, Rect(  200, 0, 200, 200));
+   // drawTransRect(smallFrame, Scalar(255,0,0), alpha, Rect(  200, 0, 200, 200));
 
    // Desenha um texto e carrega a fonte arcadeclassic.ttf
    cv::Ptr<cv::freetype::FreeType2> ft2 = cv::freetype::createFreeType2();
