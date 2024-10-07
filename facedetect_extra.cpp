@@ -1,6 +1,9 @@
 #include "opencv2/objdetect.hpp"
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
+#include "opencv2/objdetect.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
 #include "opencv2/videoio.hpp"
 #include <opencv2/freetype.hpp>
 #include <iostream>
@@ -8,7 +11,7 @@
 using namespace std;
 using namespace cv;
 
-int x=0, y=285;
+int x=0, y=0;
 
 void detectAndDraw( Mat& frame, CascadeClassifier& cascade, double scale, bool tryflip);
 
@@ -61,10 +64,7 @@ int main( int argc, const char** argv )
 
 
             detectAndDraw( frame, cascade, scale, tryflip );
-            if(x<=540)
-              x = x + 10;
-            if(x==540)
-              x = 0;
+            
 
             key = (char)waitKey(10);
             if( key == 27 || key == 'q' || key == 'Q' )
@@ -147,13 +147,13 @@ void detectAndDraw( Mat& frame, CascadeClassifier& cascade, double scale, bool t
         //|CASCADE_DO_ROUGH_SEARCH
         |CASCADE_SCALE_IMAGE,
         Size(40, 40) );
-
-    // Desenha uma imagem
-    Mat img = cv::imread("nave.png", IMREAD_UNCHANGED), img2;
+      // Desenha uma imagem
+    Mat img = cv::imread("nave.png", IMREAD_UNCHANGED), img3;
     printf("img::width: %d, height=%d\n", img.cols, img.rows );
     if (img.rows > 200 || img.cols > 200)
         resize( img, img, Size(60, 74));
     //drawImage(smallFrame, img, x, y);
+    
 
     // PERCORRE AS FACES ENCONTRADAS
     for ( size_t i = 0; i < faces.size(); i++ )
@@ -170,7 +170,12 @@ void detectAndDraw( Mat& frame, CascadeClassifier& cascade, double scale, bool t
     double alpha = 0.7; // transparência do quadrado
     //drawTransRect(smallFrame, Scalar(0,0,255), alpha, Rect(  0, 0, 640, 360)); 
    // drawTransRect(smallFrame, Scalar(255,0,0), alpha, Rect(  200, 0, 200, 200));
-
+// Desenha uma imagem
+    Mat fundo = cv::imread("cenario_Terra.png", IMREAD_UNCHANGED), img2;
+    printf("img::width: %d, height=%d\n", fundo.cols, fundo.rows );
+    if (fundo.rows > 200 || fundo.cols > 200)
+        resize( fundo, fundo, Size(640, 360));
+    drawImage(smallFrame, fundo, x, y);
    // Desenha um texto e carrega a fonte arcadeclassic.ttf
    cv::Ptr<cv::freetype::FreeType2> ft2 = cv::freetype::createFreeType2();
 
