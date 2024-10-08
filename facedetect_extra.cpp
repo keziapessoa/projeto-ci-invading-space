@@ -152,7 +152,7 @@ void detectAndDraw( Mat& frame, CascadeClassifier& cascade, double scale, bool t
     Mat fundo = cv::imread("cenario_Terra.png", IMREAD_UNCHANGED), img2;
     printf("img::width: %d, height=%d\n", fundo.cols, fundo.rows );
     if (fundo.rows > 200 || fundo.cols > 200)
-        //resize( fundo, fundo, Size(640, 360));
+        resize( fundo, fundo, Size(639, 359));
     drawImage(smallFrame, fundo, x, y);
 
       // Desenha a nave
@@ -170,7 +170,7 @@ void detectAndDraw( Mat& frame, CascadeClassifier& cascade, double scale, bool t
 //        rectangle( smallFrame, Point(cvRound(r.x), cvRound(r.y)),
 //                    Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
 //                    color, 3);
-        drawImage(smallFrame, img, r.x, r.y);
+        drawImage(smallFrame, img, r.x+60, r.y+10);
         break;
     }
 
