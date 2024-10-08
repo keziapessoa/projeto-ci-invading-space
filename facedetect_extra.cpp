@@ -159,7 +159,7 @@ void detectAndDraw( Mat& frame, CascadeClassifier& cascade, double scale, bool t
     Mat img = cv::imread("nave.png", IMREAD_UNCHANGED), img3;
     printf("img::width: %d, height=%d\n", img.cols, img.rows );
     if (img.rows > 200 || img.cols > 200)
-        resize( img, img, Size(60, 74));
+        resize( img, img, Size(30, 37));
     //drawImage(smallFrame, img, x, y);
     
 
