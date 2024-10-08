@@ -38,8 +38,8 @@ int main( int argc, const char** argv )
         return -1;
     }
 
-    if(!capture.open("video.mp4")) // para testar com um video
-    //if(!capture.open(0)) // para testar com a webcam
+    //if(!capture.open("video.mp4")) // para testar com um video
+    if(!capture.open(0)) // para testar com a webcam
     {
         cout << "Capture from camera #0 didn't work" << endl;
         return 1;
@@ -147,7 +147,15 @@ void detectAndDraw( Mat& frame, CascadeClassifier& cascade, double scale, bool t
         //|CASCADE_DO_ROUGH_SEARCH
         |CASCADE_SCALE_IMAGE,
         Size(40, 40) );
-      // Desenha uma imagem
+
+// Desenha uma o cenário 1
+    Mat fundo = cv::imread("cenario_Terra.png", IMREAD_UNCHANGED), img2;
+    printf("img::width: %d, height=%d\n", fundo.cols, fundo.rows );
+    if (fundo.rows > 200 || fundo.cols > 200)
+        //resize( fundo, fundo, Size(640, 360));
+    drawImage(smallFrame, fundo, x, y);
+
+      // Desenha a nave
     Mat img = cv::imread("nave.png", IMREAD_UNCHANGED), img3;
     printf("img::width: %d, height=%d\n", img.cols, img.rows );
     if (img.rows > 200 || img.cols > 200)
@@ -159,9 +167,9 @@ void detectAndDraw( Mat& frame, CascadeClassifier& cascade, double scale, bool t
     for ( size_t i = 0; i < faces.size(); i++ )
     {
         Rect r = faces[i];
-        rectangle( smallFrame, Point(cvRound(r.x), cvRound(r.y)),
-                    Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
-                    color, 3);
+//        rectangle( smallFrame, Point(cvRound(r.x), cvRound(r.y)),
+//                    Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
+//                    color, 3);
         drawImage(smallFrame, img, r.x, r.y);
         break;
     }
@@ -170,21 +178,16 @@ void detectAndDraw( Mat& frame, CascadeClassifier& cascade, double scale, bool t
     double alpha = 0.7; // transparência do quadrado
     //drawTransRect(smallFrame, Scalar(0,0,255), alpha, Rect(  0, 0, 640, 360)); 
    // drawTransRect(smallFrame, Scalar(255,0,0), alpha, Rect(  200, 0, 200, 200));
-// Desenha uma imagem
-    Mat fundo = cv::imread("cenario_Terra.png", IMREAD_UNCHANGED), img2;
-    printf("img::width: %d, height=%d\n", fundo.cols, fundo.rows );
-    if (fundo.rows > 200 || fundo.cols > 200)
-        resize( fundo, fundo, Size(640, 360));
-    drawImage(smallFrame, fundo, x, y);
-   // Desenha um texto e carrega a fonte arcadeclassic.ttf
-   cv::Ptr<cv::freetype::FreeType2> ft2 = cv::freetype::createFreeType2();
 
+    // Desenha um texto e carrega a fonte arcadeclassic.ttf
+   cv::Ptr<cv::freetype::FreeType2> ft2 = cv::freetype::createFreeType2();
+ 
    ft2->loadFontData("arcadeclassic.ttf", 0);
 
    // Define a cor do texto
    color = Scalar(255, 255, 255);
 
-   ft2->putText(smallFrame, "Placar:", Point(300, 50), 30, color, cv::FILLED, cv::LINE_AA, true);
+   ft2->putText(smallFrame, "CI Invading Space:", Point(170, 50), 20, color, cv::FILLED, cv::LINE_AA, true);
 
 
     // Desenha o frame na tela
