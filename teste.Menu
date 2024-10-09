@@ -116,7 +116,7 @@ int main() {
                 face_y = min(max(face_y, 0), display.rows - nave.rows);
 
                 // Desenhar a nave na posição baseada no rosto
-                drawNave(display, nave, face_x, face_y);
+                drawNave(display, nave, face_x, 700);
             }
 
             // Mostrar o jogo com o fundo e a nave
