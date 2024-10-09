@@ -2,9 +2,30 @@
 #include <opencv2/freetype.hpp>  // Para a fonte arcadeclassic.ttf
 #include <opencv2/objdetect.hpp> // Para detecção de rosto
 #include <iostream>
+#include <thread>
+#include <vector>
+#include <unistd.h>
 
 using namespace cv;
 using namespace std;
+
+void drawImage(Mat frame, Mat img, int xPos, int yPos) {
+    if (yPos + img.rows >= frame.rows || xPos + img.cols >= frame.cols)
+        return;
+
+    Mat mask;
+    vector<Mat> layers;
+
+    split(img, layers); // seperate channels
+    if (layers.size() == 4) { // img com transparencia.
+        Mat rgb[3] = { layers[0],layers[1],layers[2] };
+        mask = layers[3]; // png's alpha channel used as mask
+        merge(rgb, 3, img);  // put together the RGB channels, now transp insn't transparent 
+        img.copyTo(frame.rowRange(yPos, yPos + img.rows).colRange(xPos, xPos + img.cols), mask);
+    } else {
+        img.copyTo(frame.rowRange(yPos, yPos + img.rows).colRange(xPos, xPos + img.cols));
+    }
+}
 
 // Função para desenhar a nave com transparência
 void drawNave(Mat& background, Mat& nave, int x, int y) {
@@ -18,9 +39,22 @@ void drawNave(Mat& background, Mat& nave, int x, int y) {
     }
 }
 
+
+void drawShot(Mat background, Mat shot, int x, int y) {
+    for (int i = y; i > 0; i--) {
+     drawImage(background, shot, x, i);   
+    }
+    
+}
+
+
+
+
+
 int main() {
     // Nome da janela
     string wName = "CI Invading Space";
+    vector<thread> threads;
     
     // Carregar o background do menu
     Mat background = imread("cenario_Exosfera.png");
@@ -63,14 +97,14 @@ int main() {
         }
 
         // Abre a câmera
-        VideoCapture cap(0);
+        VideoCapture cap("video.mp4");
         if (!cap.isOpened()) {
             cout << "Erro ao abrir a câmera!" << endl;
             return -1;
         }
 
         // Carregar o cenário do jogo (opcional, se o fundo do jogo for diferente do menu)
-        Mat gameBackground = imread("cenario_Exosfera.png");
+        Mat gameBackground = imread("cenario_Troposfera.png");
         if (gameBackground.empty()) {
             cout << "Erro ao carregar o fundo do jogo!" << endl;
             return -1;
@@ -83,6 +117,12 @@ int main() {
             return -1;
         }
         resize(nave, nave, Size(100, 100));  // Redimensionar a nave para 100x100 pixels
+
+        Mat shot = imread("Shot.png", IMREAD_UNCHANGED);
+        if (nave.empty()) {
+            cout << "Erro ao carregar a imagem do tiro!" << endl;
+            return -1;
+        }
 
         Mat frame;
         vector<Rect> faces;
@@ -117,6 +157,7 @@ int main() {
 
                 // Desenhar a nave na posição baseada no rosto
                 drawNave(display, nave, face_x, 700);
+                threads.push_back(thread(drawShot,display, shot, face_x + 45, 695));
             }
 
             // Mostrar o jogo com o fundo e a nave
@@ -134,7 +175,7 @@ int main() {
             }
 
             // Sai do loop se 'q' for pressionado
-            if (keyPressed == 'q') break;
+            if (keyPressed == 'q' || keyPressed == 27) break;
         }
     } else if (key == '3') {
         cout << "Saindo do jogo..." << endl;
