@@ -2,7 +2,6 @@
 #include <opencv2/freetype.hpp> // Inclui suporte para renderização de texto com FreeType.
 #include <opencv2/objdetect.hpp> // Inclui suporte para detecção de objetos, como rostos.
 #include <iostream> // Inclui a biblioteca de entrada/saída padrão do C++.
-#include <thread> // Inclui suporte para manipulação de threads (não utilizado neste código).
 #include <vector> // Inclui a biblioteca para usar vetores dinâmicos.
 #include <chrono> // Inclui suporte para manipulação de tempo.
 #include <cstdlib> // Inclui funções de utilidade, como rand() e system().
