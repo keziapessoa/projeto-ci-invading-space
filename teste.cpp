@@ -154,11 +154,9 @@ int main() {
         int hits = 0; // Contador de acertos
         int phase = 1; // Fase atual
 
-        // Exibir fase inicial
-        displayMessage(gameBackground, ft2, colorMenu, "FASE 1");
-        imshow(wName, gameBackground);
-        waitKey(3000); // Espera 3 segundos para mostrar a fase
+        int h = 0;
 
+        
         while (true) {
             if (gameOver) {
                 Mat display = gameBackground.clone();
@@ -173,6 +171,20 @@ int main() {
                 break; // Volta ao menu
             }
 
+            Mat display = gameBackground.clone();
+
+            if (hits >= 5 || h==0) {
+                
+                hits = 0; // Reseta o contador de acertos
+                displayMessage(display, ft2, colorMenu, "FASE " + to_string(phase)); // Mostra a fase atual
+                imshow(wName, display);
+                waitKey(3000); // Espera 3 segundos para mostrar a fase
+                h++;
+                phase++; // Incrementa a fase
+                continue;
+            }
+
+
             Mat frame;
             cap >> frame;
             if (frame.empty()) {
@@ -185,7 +197,7 @@ int main() {
             equalizeHist(gray, gray);
             face_cascade.detectMultiScale(gray, faces);
 
-            Mat display = gameBackground.clone();
+            
             int nave_x = 0, nave_y = 700; 
 
             if (!faces.empty()) {
@@ -233,14 +245,7 @@ int main() {
             }
 
             // Verifica se o jogador acertou 5 alvos
-            if (hits >= 5) {
-                phase++; // Incrementa a fase
-                hits = 0; // Reseta o contador de acertos
-                displayMessage(display, ft2, colorMenu, "FASE " + to_string(phase)); // Mostra a fase atual
-                imshow(wName, display);
-                waitKey(3000); // Espera 3 segundos para mostrar a fase
-            }
-
+            
             for (const auto& targetPos : targets) {
                 drawTarget(display, target, targetPos.x, targetPos.y);
             }
