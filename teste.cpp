@@ -207,7 +207,7 @@ int main() {
             }
 
             for (size_t i = 0; i < shots.size(); i++) {
-                shots[i].y -= 5; 
+                shots[i].y -= 15; 
                 if (shots[i].y < 0) {
                     shots.erase(shots.begin() + i);
                     i--;
@@ -221,7 +221,7 @@ int main() {
             // Adiciona novos alvos se houver menos de 10 (ou qualquer número desejado)
             if (targets.size() < 10) {
                 int x = rand() % (gameBackground.cols - 100); // Ajusta para o tamanho do alvo
-                targets.emplace_back(x, -rand() % 200);
+                targets.emplace_back(x, -rand() % 500);
             }
 
             for (size_t i = 0; i < targets.size(); i++) {
