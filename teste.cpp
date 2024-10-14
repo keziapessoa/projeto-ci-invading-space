@@ -7,8 +7,8 @@
 #include <chrono> // Inclui suporte para manipulação de tempo.
 #include <cstdlib> // Inclui funções de utilidade, como rand() e system().
 
-using namespace cv; // Usa o namespace da OpenCV.
-using namespace std; // Usa o namespace padrão do C++.
+using namespace cv;
+using namespace std;
 
 void drawImage(Mat frame, Mat img, int xPos, int yPos) {
     // Verifica se a imagem a ser desenhada está fora dos limites do quadro.
