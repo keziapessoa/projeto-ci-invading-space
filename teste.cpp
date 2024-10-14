@@ -104,7 +104,8 @@ int main() {
             return -1; // Encerra o programa se houver erro.
         }
 
-        VideoCapture cap("video.mp4"); // Abre o vídeo.
+        //VideoCapture cap("video.mp4"); // Abre o vídeo.
+        VideoCapture cap("rtsp://192.168.42.117:8080/h264_ulaw.sdp"); // Abre o vídeo.
         if (!cap.isOpened()) { // Verifica se o vídeo foi aberto corretamente.
             cout << "Erro ao abrir a câmera!" << endl; // Mensagem de erro.
             return -1; // Encerra o programa se houver erro.
@@ -171,8 +172,14 @@ int main() {
                 waitKey(3000); // Espera 3 segundos para mostrar a tela de GAME OVER.
                 break; // Sai do loop e volta ao menu.
             }
-
-            Mat display = gameBackground.clone(); // Clona o fundo do jogo.
+            Mat display;
+            //Mat frame; // Matriz para armazenar cada frame do vídeo.
+            cap >> display; // Captura o próximo frame do vídeo.
+            if (display.empty()) { // Verifica se o frame foi capturado corretamente.
+                cout << "Erro ao capturar frame!" << endl; // Mensagem de erro.
+                break; // Sai do loop se houver erro.
+            }
+            //Mat display = gameBackground.clone(); // Clona o fundo do jogo.
 
             if (hits >= 5 || h==0) { // Se o jogador acertou 5 alvos ou é a primeira fase.
                 hits = 0; // Reseta o contador de acertos.
@@ -184,17 +191,18 @@ int main() {
                 continue; // Volta ao início do loop.
             }
 
-            Mat frame; // Matriz para armazenar cada frame do vídeo.
-            cap >> frame; // Captura o próximo frame do vídeo.
-            if (frame.empty()) { // Verifica se o frame foi capturado corretamente.
-                cout << "Erro ao capturar frame!" << endl; // Mensagem de erro.
-                break; // Sai do loop se houver erro.
-            }
+            
 
             Mat gray; // Matriz para a imagem em escala de cinza.
-            cvtColor(frame, gray, COLOR_BGR2GRAY); // Converte o frame para escala de cinza.
+            cvtColor(display, gray, COLOR_BGR2GRAY); // Converte o frame para escala de cinza.
             equalizeHist(gray, gray); // Equaliza o histograma da imagem em escala de cinza para melhorar o contraste.
-            face_cascade.detectMultiScale(gray, faces); // Detecta rostos na imagem em escala de cinza.
+            //face_cascade.detectMultiScale(gray, faces); // Detecta rostos na imagem em escala de cinza.
+            face_cascade.detectMultiScale( gray, faces,
+                    1.5, 2, 0
+                    //|CASCADE_FIND_BIGGEST_OBJECT
+                    //|CASCADE_DO_ROUGH_SEARCH
+                    |CASCADE_SCALE_IMAGE,
+                    Size(50, 50) );
 
             int nave_x = 0, nave_y = 700; // Posições iniciais da nave.
 
@@ -202,6 +210,9 @@ int main() {
                 nave_x = faces[0].x + faces[0].width / 2 - nave.cols / 2; // Posiciona a nave em relação ao rosto detectado.
                 nave_x = min(max(nave_x, 0), display.cols - nave.cols); // Garante que a nave não saia dos limites.
                 drawNave(display, nave, nave_x, nave_y); // Desenha a nave na tela.
+                rectangle( display, Point(cvRound(faces[0].x), cvRound(faces[0].y)),
+                    Point(cvRound((faces[0].x + faces[0].width-1)), cvRound((faces[0].y + faces[0].height-1))),
+                    Scalar(255,0,0), 3);
             }
 
             for (size_t i = 0; i < shots.size(); i++) { // Atualiza a posição dos tiros.
@@ -262,7 +273,7 @@ int main() {
                 lastShotTime = elapsedTime; // Atualiza o tempo do último tiro.
             }
 
-            int keyPressed = waitKey(30); // Espera por uma tecla e controla a taxa de frames.
+            int keyPressed = waitKey(10); // Espera por uma tecla e controla a taxa de frames.
             if (keyPressed == '2') { // Se a tecla '2' for pressionada.
                 Mat creditsDisplay = display.clone(); // Clona a tela atual para exibir créditos.
                 creditsDisplay.setTo(Scalar(0, 0, 0)); // Preenche a tela de créditos com preto.
